@@ -1,15 +1,12 @@
-import { createClient } from "@supabase/supabase-js"
+import { createBrowserClient } from "@supabase/ssr"
 
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!
 const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
 
-export const supabase = createClient(supabaseUrl, supabaseAnonKey, {
-  auth: {
-    flowType: "pkce",
-    autoRefreshToken: true,
-    detectSessionInUrl: true,
-  },
-})
+export const supabase = createBrowserClient(supabaseUrl, supabaseAnonKey)
+
+// Add this export for the createClient function
+export const createClient = () => createBrowserClient(supabaseUrl, supabaseAnonKey)
 
 export type Database = {
   public: {
@@ -37,6 +34,44 @@ export type Database = {
           avatar_url?: string | null
         }
       }
+      workspaces: {
+        Row: {
+          id: string
+          name: string
+          description: string | null
+          invite_code: string
+          created_by: string
+          created_at: string
+          updated_at: string
+        }
+        Insert: {
+          name: string
+          description?: string | null
+          invite_code: string
+          created_by: string
+        }
+        Update: {
+          name?: string
+          description?: string | null
+        }
+      }
+      workspace_members: {
+        Row: {
+          id: string
+          workspace_id: string
+          user_id: string
+          role: "admin" | "user" | "viewer"
+          joined_at: string
+        }
+        Insert: {
+          workspace_id: string
+          user_id: string
+          role?: "admin" | "user" | "viewer"
+        }
+        Update: {
+          role?: "admin" | "user" | "viewer"
+        }
+      }
       projects: {
         Row: {
           id: string
@@ -45,6 +80,7 @@ export type Database = {
           deadline: string | null
           budget: number | null
           status: string
+          workspace_id: string
           created_by: string | null
           created_at: string
           updated_at: string
@@ -55,6 +91,7 @@ export type Database = {
           deadline?: string | null
           budget?: number | null
           status?: string
+          workspace_id: string
           created_by?: string | null
         }
         Update: {

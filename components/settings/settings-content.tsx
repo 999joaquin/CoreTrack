@@ -14,4 +14,5 @@ const SettingsContent: React.FC<SettingsContentProps> = () => {
   )
 }
 
-export default SettingsContent
+// Change the default export to named export
+export { SettingsContent }
